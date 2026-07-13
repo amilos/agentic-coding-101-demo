@@ -5,7 +5,7 @@
   the Agentic Coding 101 demo. Idempotent — safe to re-run.
 
 .DESCRIPTION
-  Uses local `sqlcmd` if it is on PATH (connecting to localhost:1443). If there is
+  Uses local `sqlcmd` if it is on PATH (connecting to localhost:1433). If there is
   no local sqlcmd, it runs sqlcmd *inside* the SQL Server container named `sql2025`
   (connecting to localhost:1433 within the container).
 
@@ -17,7 +17,7 @@ $ErrorActionPreference = 'Stop'
 # --- settings ---------------------------------------------------------------
 $Sa        = 'sa'
 $Password  = 'Password123'
-$HostPort  = 'localhost,1443'     # host -> container published port
+$HostPort  = 'localhost,1433'     # host -> container published port
 $Container = 'sql2025'
 $Tsql      = "IF DB_ID('NorthBank') IS NULL CREATE DATABASE NorthBank; IF DB_ID('NorthBank_dev') IS NULL CREATE DATABASE NorthBank_dev;"
 # ---------------------------------------------------------------------------

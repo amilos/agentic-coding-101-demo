@@ -50,16 +50,16 @@ pwsh ./scripts/create-databases.ps1
 
 ```bash
 # apply schema + posting procedure, then the tSQLt tests (-C trusts the cert):
-sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i db/schema.sql
-sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i db/proc_PostTransaction.sql
-sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
+sqlcmd -S localhost,1433 -U sa -P Password123 -C -d NorthBank -i db/schema.sql
+sqlcmd -S localhost,1433 -U sa -P Password123 -C -d NorthBank -i db/proc_PostTransaction.sql
+sqlcmd -S localhost,1433 -U sa -P Password123 -C -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
 # then:  EXEC tSQLt.RunAll;
 ```
 
 ### Atlas (declarative migrations)
 
 No Docker, no env vars — the connection strings are baked into `atlas/atlas.hcl` for the
-local demo (localhost:1443, sa / Password123; `NorthBank` target + empty `NorthBank_dev`
+local demo (localhost:1433, sa / Password123; `NorthBank` target + empty `NorthBank_dev`
 scratch, both created by the script above).
 
 ```bash
