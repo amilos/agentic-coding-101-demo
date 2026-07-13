@@ -52,12 +52,24 @@ sqlcmd -S localhost -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
 
 ### Atlas (declarative migrations)
 
+No Docker required — Atlas uses a scratch database on your own SQL Server instance.
+
 ```bash
+# 1) create an empty scratch database once (Atlas rewrites it freely):
+sqlcmd -S localhost -Q "CREATE DATABASE NorthBank_dev;"
+
+# 2) point Atlas at your instance — use YOUR host/port and a URL-encoded password:
 export NORTHBANK_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank"
+export NORTHBANK_DEV_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank_dev"
+
 cd atlas
-atlas schema apply --env local            # apply schema.hcl
-atlas migrate diff --env local            # generate a migration after edits
+atlas schema apply --env local            # apply schema.hcl to NORTHBANK_DB_URL
+atlas migrate diff  --env local           # generate a migration after editing schema.hcl
 ```
+
+The scratch database must be **empty and dedicated** to Atlas (it errors if the dev
+database isn't clean). No `NORTHBANK_DEV_DB_URL`? Atlas will report that the dev URL is
+required — set it as above.
 
 ### Delphi (DUnitX + UI)
 
