@@ -10,7 +10,7 @@
 # Example (SQL Server on localhost — use YOUR host/port, e.g. 1433 or 1443):
 #   export NORTHBANK_DB_URL="sqlserver://sa:P%40ssw0rd@localhost:1433?database=NorthBank"
 #   export NORTHBANK_DEV_DB_URL="sqlserver://sa:P%40ssw0rd@localhost:1433?database=NorthBank_dev"
-# Create the scratch database once:  CREATE DATABASE NorthBank_dev;
+# Create BOTH databases once:  CREATE DATABASE NorthBank; CREATE DATABASE NorthBank_dev;
 # URL-encode special characters in the password (@ -> %40, : -> %3A, / -> %2F).
 
 env "local" {

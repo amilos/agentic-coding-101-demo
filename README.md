@@ -43,7 +43,11 @@ dotnet test                                  # xUnit tests (happy path only)
 ### T-SQL (SQL Server)
 
 ```bash
-# Apply schema and the posting procedure, then the tSQLt tests, with sqlcmd:
+# one-time: create BOTH the target DB (NorthBank) and the empty scratch DB
+# Atlas needs (NorthBank_dev). schema.sql only creates tables, not the database.
+sqlcmd -S localhost -Q "CREATE DATABASE NorthBank; CREATE DATABASE NorthBank_dev;"
+
+# apply schema + posting procedure, then the tSQLt tests, with sqlcmd:
 sqlcmd -S localhost -d NorthBank -i db/schema.sql
 sqlcmd -S localhost -d NorthBank -i db/proc_PostTransaction.sql
 sqlcmd -S localhost -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
@@ -52,13 +56,11 @@ sqlcmd -S localhost -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
 
 ### Atlas (declarative migrations)
 
-No Docker required — Atlas uses a scratch database on your own SQL Server instance.
+No Docker required — Atlas manages `NorthBank` and uses the empty `NorthBank_dev`
+scratch database created above.
 
 ```bash
-# 1) create an empty scratch database once (Atlas rewrites it freely):
-sqlcmd -S localhost -Q "CREATE DATABASE NorthBank_dev;"
-
-# 2) point Atlas at your instance — use YOUR host/port and a URL-encoded password:
+# point Atlas at your instance — use YOUR host/port and a URL-encoded password:
 export NORTHBANK_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank"
 export NORTHBANK_DEV_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank_dev"
 
@@ -67,9 +69,9 @@ atlas schema apply --env local            # apply schema.hcl to NORTHBANK_DB_URL
 atlas migrate diff  --env local           # generate a migration after editing schema.hcl
 ```
 
-The scratch database must be **empty and dedicated** to Atlas (it errors if the dev
-database isn't clean). No `NORTHBANK_DEV_DB_URL`? Atlas will report that the dev URL is
-required — set it as above.
+The two databases are separate on purpose: Atlas requires its scratch/dev database to be
+**empty and dedicated** (it errors if the dev database isn't clean), so it must not be the
+same DB as `NorthBank`. No `NORTHBANK_DEV_DB_URL`? Atlas reports that the dev URL is required.
 
 ### Delphi (DUnitX + UI)
 
