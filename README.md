@@ -126,10 +126,13 @@ meaningless ledger entry; a negative amount moves money the wrong way. The
 balance check uses the correct comparison — this is the only C# defect, kept
 crisp on purpose.
 
-- **Discovered in:** Station 6 / QA review (and named in Station 3) as
-  **ISSUES.md issue #2**.
-- **Fixed in:** Station 3 — reject non-positive amounts before any balance
-  change; add xUnit tests for zero and negative.
+- **Named in:** Station 1/3 as **ISSUES.md issue #2**.
+- **Discovered & fixed in:** Station 7 — the **Copilot code review** (and the
+  `banking-review` skill, which checks every transfer path) flags the missing
+  guard; reject non-positive amounts before any balance change and add xUnit
+  tests for zero and negative. (A room that tackles issue #2 early can instead
+  fix it in Station 3.) Note: the Station 6 `pii-redaction-check` skill does
+  **not** find this — it only flags PII in logs/console.
 
 The same theme is mirrored in T-SQL: `dbo.PostTransaction`
 (`db/proc_PostTransaction.sql`) has no negative-amount guard either.
