@@ -1,12 +1,14 @@
-// Appium + WinAppDriver UI test for the NorthBank StatementViewer (Win32 VCL).
+// Appium (NovaWindows driver) UI test for the NorthBank StatementViewer (Win32 VCL).
 //
-// Prerequisites (Windows only):
-//   1. WinAppDriver running:  C:\Program Files\Windows Application Driver\WinAppDriver.exe
-//   2. StatementViewer.exe built from ui/StatementViewer.dpr.
+// Prerequisites (Windows only) — no WinAppDriver needed:
+//   1. npm install -g appium
+//      appium driver install --source=npm appium-novawindows-driver
+//   2. Enable Windows Developer Mode, then run:  appium   (server on 127.0.0.1:4723)
+//   3. StatementViewer.exe built from ui/StatementViewer.dpr.
 //
-// Update APP_PATH and the automation ids below to match your build. VCL
-// controls are exposed by their Name property (edtAccountId, btnLoad,
-// lstStatement); WinAppDriver can target them with accessibility id.
+// Update APP_PATH and the automation ids below to match your build. VCL controls
+// are exposed by their Name property (edtAccountId, btnLoad, lstStatement); the
+// NovaWindows driver targets them by accessibility id (~name).
 
 const { remote } = require('webdriverio');
 const assert = require('assert');
@@ -16,7 +18,7 @@ const APP_PATH = 'C:\\\\NorthBank\\\\StatementViewer.exe';
 
 const capabilities = {
   platformName: 'Windows',
-  'appium:automationName': 'Windows',
+  'appium:automationName': 'NovaWindows',
   'appium:app': APP_PATH,
 };
 

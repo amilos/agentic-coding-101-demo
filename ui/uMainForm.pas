@@ -2,7 +2,7 @@ unit uMainForm;
 
 { NorthBank statement viewer (Win32 VCL).
 
-  Minimal stubbed screen used for the Appium/WinAppDriver UI-automation demo.
+  Minimal stubbed screen used for the Appium/NovaWindows UI-automation demo.
   Controls carry stable Names so an automation id can target them:
     edtAccountId  - account number entry
     btnLoad       - loads the statement

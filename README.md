@@ -9,7 +9,7 @@ attendees can practise agentic workflows end to end:
 - **T-SQL / SQL Server** — `db/` schema and stored procedure, tSQLt tests,
   and Atlas declarative migrations under `atlas/`.
 - **Delphi / Object Pascal** — legacy interest engine (`legacy/`), a Win32 VCL
-  statement viewer (`ui/`), DUnitX unit tests, and an Appium/WinAppDriver UI
+  statement viewer (`ui/`), DUnitX unit tests, and an Appium/NovaWindows UI
   test.
 - **Copilot customisation** — sample skills, a custom agent, and an MCP
   template under `.github/`.
@@ -27,7 +27,9 @@ See the course workbook for full setup. In short:
 - RAD Studio / Delphi for the `legacy/` and `ui/` code and DUnitX tests
   (Win32). Note: there is **no native inline Copilot completion inside RAD
   Studio** — drive edits from the Copilot desktop app against the worktree.
-- Node.js for the Appium test scaffold; WinAppDriver (Windows) to run it.
+- Node.js for the Appium test scaffold; the **NovaWindows** Appium driver
+  (`appium driver install --source=npm appium-novawindows-driver`) to run it on
+  Windows — no WinAppDriver needed.
 
 ## Build & run
 
@@ -78,14 +80,26 @@ The two databases are separate on purpose: Atlas requires its scratch/dev databa
   console) for the unit tests.
 - Build `ui/StatementViewer.dpr` to produce `StatementViewer.exe`.
 
-### Appium / WinAppDriver (Windows)
+### Appium / NovaWindows driver (Windows)
+
+Uses the [NovaWindows](https://github.com/AutomateThePlanet/appium-novawindows-driver)
+Appium 2 driver — a standalone drop-in for the old Windows driver, so **no
+WinAppDriver install** and no separate server exe.
 
 ```bash
+# one-time: Appium + the NovaWindows driver
+npm install -g appium
+appium driver install --source=npm appium-novawindows-driver
+# enable Windows Developer Mode, then start the Appium server (127.0.0.1:4723):
+appium
+
+# in another shell: install deps, point APP_PATH at StatementViewer.exe, run:
 cd tests/appium
 npm install
-# start WinAppDriver.exe, set APP_PATH in statement_ui_test.js, then:
 npm test
 ```
+
+The test uses `automationName: "NovaWindows"` (see `statement_ui_test.js`).
 
 ---
 
