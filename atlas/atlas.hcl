@@ -1,25 +1,20 @@
 # Atlas project configuration for NorthBank.
 #
-# No Docker required. Provide two SQL Server connection strings via environment
-# variables — the target database, and an EMPTY scratch database that Atlas uses
-# to normalise schemas and plan migrations:
+# Connection strings are hard-coded for the LOCAL TRAINING DEMO — SQL Server in the
+# "sql2025" container on localhost:1443, sa / Password123. This keeps the 3-minute
+# Station 4 exercise friction-free (no env vars). For real/shared use, switch these
+# back to getenv("NORTHBANK_DB_URL") / getenv("NORTHBANK_DEV_DB_URL").
 #
-#   NORTHBANK_DB_URL      -> the database Atlas manages (holds your real schema)
-#   NORTHBANK_DEV_DB_URL  -> a dedicated EMPTY database Atlas may freely rewrite
-#
-# Example (SQL Server on localhost — use YOUR host/port, e.g. 1433 or 1443):
-#   export NORTHBANK_DB_URL="sqlserver://sa:P%40ssw0rd@localhost:1433?database=NorthBank"
-#   export NORTHBANK_DEV_DB_URL="sqlserver://sa:P%40ssw0rd@localhost:1433?database=NorthBank_dev"
-# Create BOTH databases once:  CREATE DATABASE NorthBank; CREATE DATABASE NorthBank_dev;
-# URL-encode special characters in the password (@ -> %40, : -> %3A, / -> %2F).
+# Create both databases first:   pwsh ./scripts/create-databases.ps1
+#   NorthBank      -> the schema Atlas manages
+#   NorthBank_dev  -> an EMPTY scratch DB Atlas uses to plan migrations (no Docker needed)
 
 env "local" {
   src = "file://schema.hcl"
-  url = getenv("NORTHBANK_DB_URL")
+  url = "sqlserver://sa:Password123@localhost:1443?database=NorthBank"
 
-  # Scratch database Atlas uses to plan migrations safely.
-  # Point it at an EMPTY database on your own SQL Server — no Docker needed.
-  dev = getenv("NORTHBANK_DEV_DB_URL")
+  # Scratch database Atlas rewrites freely — must be empty and dedicated.
+  dev = "sqlserver://sa:Password123@localhost:1443?database=NorthBank_dev"
 
   migration {
     dir = "file://migrations"

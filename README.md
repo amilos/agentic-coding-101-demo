@@ -42,36 +42,35 @@ dotnet test                                  # xUnit tests (happy path only)
 
 ### T-SQL (SQL Server)
 
-```bash
-# one-time: create BOTH the target DB (NorthBank) and the empty scratch DB
-# Atlas needs (NorthBank_dev). schema.sql only creates tables, not the database.
-sqlcmd -S localhost -Q "CREATE DATABASE NorthBank; CREATE DATABASE NorthBank_dev;"
+```powershell
+# one-time: create BOTH databases (NorthBank + the empty NorthBank_dev scratch DB).
+# Uses local sqlcmd if present, else runs sqlcmd inside the sql2025 container.
+pwsh ./scripts/create-databases.ps1
+```
 
-# apply schema + posting procedure, then the tSQLt tests, with sqlcmd:
-sqlcmd -S localhost -d NorthBank -i db/schema.sql
-sqlcmd -S localhost -d NorthBank -i db/proc_PostTransaction.sql
-sqlcmd -S localhost -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
+```bash
+# apply schema + posting procedure, then the tSQLt tests (-C trusts the cert):
+sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i db/schema.sql
+sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i db/proc_PostTransaction.sql
+sqlcmd -S localhost,1443 -U sa -P Password123 -C -d NorthBank -i tests/tsqlt/test_PostTransaction.sql
 # then:  EXEC tSQLt.RunAll;
 ```
 
 ### Atlas (declarative migrations)
 
-No Docker required — Atlas manages `NorthBank` and uses the empty `NorthBank_dev`
-scratch database created above.
+No Docker, no env vars — the connection strings are baked into `atlas/atlas.hcl` for the
+local demo (localhost:1443, sa / Password123; `NorthBank` target + empty `NorthBank_dev`
+scratch, both created by the script above).
 
 ```bash
-# point Atlas at your instance — use YOUR host/port and a URL-encoded password:
-export NORTHBANK_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank"
-export NORTHBANK_DEV_DB_URL="sqlserver://sa:PASSWORD@localhost:1433?database=NorthBank_dev"
-
 cd atlas
-atlas schema apply --env local            # apply schema.hcl to NORTHBANK_DB_URL
+atlas schema apply --env local            # apply schema.hcl to NorthBank
 atlas migrate diff  --env local           # generate a migration after editing schema.hcl
 ```
 
 The two databases are separate on purpose: Atlas requires its scratch/dev database to be
-**empty and dedicated** (it errors if the dev database isn't clean), so it must not be the
-same DB as `NorthBank`. No `NORTHBANK_DEV_DB_URL`? Atlas reports that the dev URL is required.
+**empty and dedicated** (it errors if it isn't clean), so `NorthBank_dev` must not be
+`NorthBank`. For real/shared use, switch `atlas.hcl` back to `getenv(...)` URLs.
 
 ### Delphi (DUnitX + UI)
 
