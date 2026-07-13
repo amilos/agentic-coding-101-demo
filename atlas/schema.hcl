@@ -57,16 +57,25 @@ table "LedgerEntries" {
     null = false
   }
 
-  # Station 4a: add this nullable column declaratively, then generate the
-  # migration with `atlas migrate diff`.
-  #
-  # column "Reference" {
-  #   type = nvarchar(100)
-  #   null = true
-  # }
+  column "Reference" {
+    type = nvarchar(100)
+    null = true
+  }
 
   primary_key {
     columns = [column.EntryId]
+  }
+
+  index "IX_LedgerEntries_FromAccount_PostedAt" {
+    columns      = [column.FromAccount, column.PostedAt]
+    include      = [column.ToAccount, column.Amount]
+    nonclustered = true
+  }
+
+  index "IX_LedgerEntries_ToAccount_PostedAt" {
+    columns      = [column.ToAccount, column.PostedAt]
+    include      = [column.FromAccount, column.Amount]
+    nonclustered = true
   }
 
   foreign_key "FK_LedgerEntries_From" {

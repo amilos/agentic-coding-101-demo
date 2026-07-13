@@ -29,9 +29,17 @@ BEGIN
     EXEC tSQLt.AssertEquals @Expected = 400.00, @Actual = @from;
     EXEC tSQLt.AssertEquals @Expected = 350.00, @Actual = @to;
 
-    -- Assert: exactly one ledger row was written.
+    -- Assert: one correctly populated ledger row was written.
     DECLARE @rows INT = (SELECT COUNT(*) FROM dbo.LedgerEntries);
     EXEC tSQLt.AssertEquals @Expected = 1, @Actual = @rows;
+
+    DECLARE @ledgerFromAccount VARCHAR(16) = (SELECT FromAccount FROM dbo.LedgerEntries);
+    DECLARE @ledgerToAccount   VARCHAR(16) = (SELECT ToAccount FROM dbo.LedgerEntries);
+    DECLARE @ledgerAmount      DECIMAL(19, 4) = (SELECT Amount FROM dbo.LedgerEntries);
+
+    EXEC tSQLt.AssertEquals @Expected = '1001', @Actual = @ledgerFromAccount;
+    EXEC tSQLt.AssertEquals @Expected = '1002', @Actual = @ledgerToAccount;
+    EXEC tSQLt.AssertEquals @Expected = 100.00, @Actual = @ledgerAmount;
 END
 GO
 
