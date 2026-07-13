@@ -1,4 +1,4 @@
-program InterestCalcTests;
+program InterestCalcTestRunner;
 
 {$APPTYPE CONSOLE}
 {$STRONGLINKTYPES ON}
@@ -7,7 +7,7 @@ uses
   System.SysUtils,
   DUnitX.Loggers.Console,
   DUnitX.TestFramework,
-  uInterestCalc in '..\..\legacy\InterestCalc.pas',
+  uInterestCalc in '..\..\legacy\uInterestCalc.pas',
   InterestCalcTests in 'InterestCalcTests.pas';
 
 var

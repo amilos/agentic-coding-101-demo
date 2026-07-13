@@ -1,12 +1,6 @@
 unit InterestCalcTests;
 
-{ DUnitX tests for uInterestCalc.CalculateMonthlyInterest.
-
-  NOTE: TestRoundingToTwoDecimalPlaces is EXPECTED TO FAIL against the current
-  implementation. CalculateMonthlyInterest uses Trunc rather than banker's
-  rounding to 2dp, so amounts that should round up are truncated down. The
-  failing test motivates the Station 5a/5b fix and should pass once rounding
-  is corrected. }
+{ DUnitX tests for uInterestCalc.CalculateMonthlyInterest. }
 
 interface
 
@@ -25,6 +19,12 @@ type
 
     [Test]
     procedure TestRoundingToTwoDecimalPlaces;
+
+    [Test]
+    procedure TestHalfCentRoundsToEvenCent;
+
+    [Test]
+    procedure TestHalfCentRoundsUpToEvenCent;
   end;
 
 implementation
@@ -47,9 +47,20 @@ end;
 procedure TInterestCalcTests.TestRoundingToTwoDecimalPlaces;
 begin
   // 100.00 at 5% p.a. => monthly = 100 * (0.05 / 12) = 0.416666...
-  // Correct half-even rounding to 2dp gives 0.42. The current Trunc-based
-  // implementation yields 0.41, so this assertion fails until the fix.
+  // Rounding to 2dp gives 0.42.
   Assert.AreEqual(Currency(0.42), CalculateMonthlyInterest(100.00, 5.0));
+end;
+
+procedure TInterestCalcTests.TestHalfCentRoundsToEvenCent;
+begin
+  // 1.00 at 6% p.a. yields exactly 0.005 monthly, halfway to 0.01.
+  Assert.AreEqual(Currency(0.00), CalculateMonthlyInterest(1.00, 6.0));
+end;
+
+procedure TInterestCalcTests.TestHalfCentRoundsUpToEvenCent;
+begin
+  // 1.00 at 18% p.a. yields exactly 0.015 monthly, halfway to 0.02.
+  Assert.AreEqual(Currency(0.02), CalculateMonthlyInterest(1.00, 18.0));
 end;
 
 initialization

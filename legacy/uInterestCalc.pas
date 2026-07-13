@@ -19,7 +19,7 @@ var
 begin
   MonthlyRate := (AnnualRatePercent / 100.0) / 12.0;
   Raw := Balance * MonthlyRate;
-  Result := Trunc(Raw * 100) / 100;
+  Result := Round(Raw * 100) / 100;
 end;
 
 end.

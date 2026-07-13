@@ -8,8 +8,8 @@ attendees can practise agentic workflows end to end:
 - **C# / .NET 8** — `src/PaymentService` (payments core) + xUnit tests.
 - **T-SQL / SQL Server** — `db/` schema and stored procedure, tSQLt tests,
   and Atlas declarative migrations under `atlas/`.
-- **Delphi / Object Pascal** — legacy interest engine (`legacy/`), a Win32 VCL
-  statement viewer (`ui/`), DUnitX unit tests, and an Appium/WinAppDriver UI
+- **Delphi / Object Pascal** — legacy interest engine (`legacy/`), a Win64 VCL
+  statement viewer (`ui/`), DUnitX unit tests, and an Appium/NovaWindows UI
   test.
 - **Copilot customisation** — sample skills, a custom agent, and an MCP
   template under `.github/`.
@@ -25,9 +25,9 @@ See the course workbook for full setup. In short:
 - SQL Server (local or container) for the T-SQL and tSQLt exercises;
   [Atlas](https://atlasgo.io) CLI for migrations.
 - RAD Studio / Delphi for the `legacy/` and `ui/` code and DUnitX tests
-  (Win32). Note: there is **no native inline Copilot completion inside RAD
+  (Win64). Note: there is **no native inline Copilot completion inside RAD
   Studio** — drive edits from the Copilot desktop app against the worktree.
-- Node.js for the Appium test scaffold; WinAppDriver (Windows) to run it.
+- Node.js and Appium 3 for the NovaWindows UI test scaffold (Windows).
 
 ## Build & run
 
@@ -78,14 +78,22 @@ The two databases are separate on purpose: Atlas requires its scratch/dev databa
   console) for the unit tests.
 - Build `ui/StatementViewer.dpr` to produce `StatementViewer.exe`.
 
-### Appium / WinAppDriver (Windows)
+### Appium / NovaWindows (Windows)
 
-```bash
+```powershell
 cd tests/appium
 npm install
-# start WinAppDriver.exe, set APP_PATH in statement_ui_test.js, then:
+# Install Appium 3 and its NovaWindows driver, then start the server:
+npm install -g appium@3
+appium driver install --source=npm appium-novawindows-driver
+appium
+# In a second terminal, after building ui/StatementViewer.dpr:
+$env:STATEMENT_VIEWER_PATH = (Resolve-Path ..\..\ui\StatementViewer.exe).Path
 npm test
 ```
+
+NovaWindows setup and supported UI Automation locators are documented by
+the driver at https://github.com/AutomateThePlanet/appium-novawindows-driver.
 
 ---
 

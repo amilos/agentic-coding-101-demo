@@ -80,7 +80,7 @@ supporting index declaratively via Atlas (`atlas/schema.hcl`).
 
 **Body**
 
-`legacy/InterestCalc.pas` computes monthly interest by truncating
+`legacy/uInterestCalc.pas` computes monthly interest by truncating
 (`Trunc`) to 2 decimal places. Truncation understates interest and is not the
 bank's rounding policy. Switch to banker's rounding (round half to even) at 2
 decimal places without changing the public function signature.

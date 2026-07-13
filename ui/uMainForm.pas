@@ -1,12 +1,12 @@
 unit uMainForm;
 
-{ NorthBank statement viewer (Win32 VCL).
+{ NorthBank statement viewer (Win64 VCL).
 
   Minimal stubbed screen used for the Appium/WinAppDriver UI-automation demo.
-  Controls carry stable Names so an automation id can target them:
-    edtAccountId  - account number entry
-    btnLoad       - loads the statement
-    lstStatement  - the resulting statement lines }
+  Controls expose stable UI Automation IDs:
+   1001 - account number entry
+   1002 - loads the statement
+   1003 - the resulting statement lines }
 
 interface
 
@@ -16,11 +16,16 @@ uses
 
 type
   TfrmMain = class(TForm)
+  private
+    procedure AssignAutomationId(Control: TWinControl; ControlId: NativeInt);
+    procedure CreateControls;
+    procedure btnLoadClick(Sender: TObject);
+  public
     edtAccountId: TEdit;
     btnLoad: TButton;
     lstStatement: TListBox;
     lblAccountId: TLabel;
-    procedure btnLoadClick(Sender: TObject);
+    constructor Create(AOwner: TComponent); override;
   end;
 
 var
@@ -28,7 +33,66 @@ var
 
 implementation
 
-{$R *.dfm}
+const
+  AccountIdEditAutomationId = 1001;
+  LoadButtonAutomationId = 1002;
+  StatementListAutomationId = 1003;
+
+constructor TfrmMain.Create(AOwner: TComponent);
+begin
+  // CreateNew avoids loading the legacy DFM resource.
+  inherited CreateNew(AOwner);
+
+  Caption := 'NorthBank Statement Viewer';
+  ClientHeight := 320;
+  ClientWidth := 480;
+  Color := clBtnFace;
+  Font.Name := 'Segoe UI';
+  Font.Height := -12;
+
+  CreateControls;
+end;
+
+procedure TfrmMain.AssignAutomationId(Control: TWinControl; ControlId: NativeInt);
+begin
+  // UI Automation exposes a Win32 child window's control ID as AutomationId.
+  // Source: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowlongptrw
+  SetWindowLongPtr(Control.Handle, GWLP_ID, ControlId);
+end;
+
+procedure TfrmMain.CreateControls;
+begin
+  lblAccountId := TLabel.Create(Self);
+  lblAccountId.Name := 'lblAccountId';
+  lblAccountId.Parent := Self;
+  lblAccountId.SetBounds(16, 19, 62, 15);
+  lblAccountId.Caption := 'Account id:';
+
+  edtAccountId := TEdit.Create(Self);
+  edtAccountId.Name := 'edtAccountId';
+  edtAccountId.Parent := Self;
+  edtAccountId.SetBounds(88, 16, 200, 23);
+  edtAccountId.TabOrder := 0;
+  AssignAutomationId(edtAccountId, AccountIdEditAutomationId);
+  lblAccountId.FocusControl := edtAccountId;
+
+  btnLoad := TButton.Create(Self);
+  btnLoad.Name := 'btnLoad';
+  btnLoad.Parent := Self;
+  btnLoad.SetBounds(304, 15, 75, 25);
+  btnLoad.Caption := 'Load';
+  btnLoad.TabOrder := 1;
+  btnLoad.OnClick := btnLoadClick;
+  AssignAutomationId(btnLoad, LoadButtonAutomationId);
+
+  lstStatement := TListBox.Create(Self);
+  lstStatement.Name := 'lstStatement';
+  lstStatement.Parent := Self;
+  lstStatement.SetBounds(16, 56, 448, 248);
+  lstStatement.ItemHeight := 15;
+  lstStatement.TabOrder := 2;
+  AssignAutomationId(lstStatement, StatementListAutomationId);
+end;
 
 procedure TfrmMain.btnLoadClick(Sender: TObject);
 var
