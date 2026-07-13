@@ -57,14 +57,6 @@ table "LedgerEntries" {
     null = false
   }
 
-  # Station 4a: add this nullable column declaratively, then generate the
-  # migration with `atlas migrate diff`.
-  #
-  # column "Reference" {
-  #   type = nvarchar(100)
-  #   null = true
-  # }
-
   primary_key {
     columns = [column.EntryId]
   }
