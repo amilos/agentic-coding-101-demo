@@ -40,6 +40,12 @@ public class TransferService
             return TransferResult.Fail("Insufficient funds.");
         }
 
+        var transferredToday = _ledger.SumTransfersToday(fromId);
+        if (transferredToday + amount > from.DailyTransferLimit)
+        {
+            return TransferResult.Fail("Daily transfer limit exceeded.");
+        }
+
         from.Balance -= amount;
         to.Balance += amount;
         _ledger.AddEntry(new LedgerEntry(fromId, toId, amount, DateTime.UtcNow));
