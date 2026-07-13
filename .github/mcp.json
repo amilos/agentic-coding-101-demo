@@ -1,0 +1,21 @@
+{
+  "// note": "Sample MCP configuration template for the NorthBank demo repo. Enable a server by keeping it in mcpServers; fill in secrets via environment variables, never commit tokens.",
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${workspaceFolder}"
+      ]
+    }
+  },
+  "// disabledServers": "Uncomment and configure to give the agent GitHub access. Provide GITHUB_PERSONAL_ACCESS_TOKEN via your environment, not this file.",
+  "// github": {
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-github"],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+    }
+  }
+}

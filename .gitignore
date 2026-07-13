@@ -1,0 +1,20 @@
+# .NET build output
+bin/
+obj/
+
+# Delphi build output
+*.exe
+*.dcu
+*.dproj.local
+*.identcache
+__history/
+Win32/
+Win64/
+
+# Node
+node_modules/
+
+# IDE
+.vs/
+.idea/
+*.user

@@ -1,0 +1,13 @@
+{
+  "name": "northbank-statement-ui-tests",
+  "version": "1.0.0",
+  "description": "Appium + WinAppDriver UI test for the NorthBank StatementViewer Win32 app.",
+  "private": true,
+  "scripts": {
+    "test": "mocha statement_ui_test.js --timeout 60000"
+  },
+  "devDependencies": {
+    "webdriverio": "^8.39.0",
+    "mocha": "^10.7.3"
+  }
+}
