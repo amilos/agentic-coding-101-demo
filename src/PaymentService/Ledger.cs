@@ -32,6 +32,8 @@ public class InMemoryLedger : ILedger
         }
     }
 
+    public int EntryCount => _entries.Count;
+
     public Account? GetAccount(string id)
         => _accounts.TryGetValue(id, out var account) ? account : null;
 
