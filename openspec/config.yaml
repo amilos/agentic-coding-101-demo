@@ -1,0 +1,42 @@
+schema: spec-driven
+
+context: |
+  NorthBank is a fictional retail-bank core used for training. This service owns
+  accounts, funds transfers, and the ledger; monthly interest and statements
+  live in adjacent components.
+
+  Tech:
+  - PaymentService is a .NET 8 C# class library and console application.
+  - Money is always decimal (Currency), never floating point.
+  - The demo uses in-memory persistence (InMemoryLedger).
+
+  Key types:
+  - Account: string Id, string Owner, decimal Balance, decimal DailyTransferLimit,
+    string Currency.
+  - ILedger/InMemoryLedger stores accounts and LedgerEntry(from, to, amount,
+    timestamp) records.
+  - TransferService.Transfer accepts fromId, toId, and a decimal amount and
+    returns TransferResult.
+
+  Conventions:
+  - Validate every transfer path before moving any balance.
+  - Ledger entries must balance: every debit has a matching credit.
+  - Do not write PII, including account numbers, owner names, or emails, to logs
+    or console output.
+  - Tests are xUnit under tests/PaymentService.Tests.
+
+  Current state:
+  - Per-account daily transfer limits are enforced.
+  - The add-idempotent-transfers change addresses successful transfer retries
+    that would otherwise double-charge; its design is in
+    docs/adr/0001-idempotent-transfers.md and it is tracked as issue #6.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
