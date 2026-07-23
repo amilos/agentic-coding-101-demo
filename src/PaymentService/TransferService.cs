@@ -1,8 +1,18 @@
 namespace NorthBank.PaymentService;
 
+/// <summary>
+/// Describes the outcome of a transfer attempt.
+/// </summary>
 public record TransferResult(bool Success, string Message)
 {
+    /// <summary>
+    /// Returns a success result for a posted transfer.
+    /// </summary>
     public static TransferResult Ok() => new(true, "Transfer posted.");
+
+    /// <summary>
+    /// Returns a failure result with the supplied message.
+    /// </summary>
     public static TransferResult Fail(string message) => new(false, message);
 }
 
@@ -13,8 +23,14 @@ public class TransferService
 {
     private readonly ILedger _ledger;
 
+    /// <summary>
+    /// Creates a transfer service backed by the supplied ledger.
+    /// </summary>
     public TransferService(ILedger ledger) => _ledger = ledger;
 
+    /// <summary>
+    /// Attempts to move funds between two accounts and posts the transfer if validation succeeds.
+    /// </summary>
     public TransferResult Transfer(string fromId, string toId, decimal amount)
     {
         var from = _ledger.GetAccount(fromId);
